@@ -6,7 +6,7 @@
 import * as THREE from 'three';
 import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
 
-const PX = 720, PY = 405, FRAME_W = 7.2; // 畫框在 3D 裡寬 7.2，DOM 用 720px 再縮 0.01
+const PX = 720, PY = 405; // 橫式播放器的 DOM 尺寸；直式（Shorts）用 405×720，再依畫框寬度縮放到 3D
 
 export function createIslandPlayer(works, islands, audio) {
   // ---------- 本機預覽 ----------
@@ -40,7 +40,7 @@ export function createIslandPlayer(works, islands, audio) {
   css.render(scene, new THREE.PerspectiveCamera()); // 先渲染一次，把播放器元素掛進頁面，YouTube 才建得起來
   css.domElement.style.visibility = 'hidden';
 
-  let player = null, ready = false, ytCur = -1, playing = false, vis = 0, vol = 0;
+  let player = null, ready = false, ytCur = -1, playing = false, vis = 0, vol = 0, pw = PX;
   const failed = new Set();
   const idOf = (yt) => yt.replace('shorts/', '');
   window.onYouTubeIframeAPIReady = () => {
@@ -103,6 +103,10 @@ export function createIslandPlayer(works, islands, audio) {
       if (wantYt >= 0 && (works[wantYt].audio || failed.has(wantYt))) wantYt = -1;
       if (ready && wantYt !== ytCur) {
         if (wantYt >= 0) {
+          const v = islands[wantYt].frame.userData.size.vertical;
+          pw = v ? PY : PX; const ph = v ? PX : PY;
+          wrap.style.width = `${pw}px`; wrap.style.height = `${ph}px`;
+          player.setSize(pw, ph);
           player.loadVideoById({ videoId: idOf(works[wantYt].yt), startSeconds: works[wantYt].start || 0 });
           vol = 0; player.setVolume(0);
         } else player.pauseVideo();
@@ -121,7 +125,7 @@ export function createIslandPlayer(works, islands, audio) {
         f.updateWorldMatrix(true, false);
         f.matrixWorld.decompose(pos, q, sc);
         obj.position.copy(pos); obj.quaternion.copy(q);
-        obj.scale.setScalar(FRAME_W / PX);
+        obj.scale.setScalar(f.userData.size.w / pw);
         obj.translateZ(0.03);
         wrap.style.opacity = vis.toFixed(3);
         css.domElement.style.visibility = 'visible';

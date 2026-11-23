@@ -177,11 +177,23 @@ export function createSea(renderer, tex, buildLandmark) {
     if (!lm) lm = placeholderLandmark(w.accent);
     lm.position.y = 1.98; lm.rotation.y = Math.PI * 0.25 + (i % 3) * 0.3; g.add(lm);
     // 封面畫框（朝向鏡頭路徑）
+    // Shorts 用直式 9:16 畫框，其他用 16:9
+    const vertical = w.yt.startsWith('shorts/');
+    const fw = vertical ? 3.6 : 7.2, fh = vertical ? 6.4 : 4.05;
     const frame = new THREE.Group(); frame.position.set(7, 7.4, -6); frame.rotation.y = Math.atan2(12, 25);
-    const glow = new THREE.Mesh(new THREE.PlaneGeometry(7.6, 4.45), new THREE.MeshBasicMaterial({ color: new THREE.Color(2.2, 1.55, 0.9), transparent: true, opacity: 0.9 }));
+    frame.userData.size = { w: fw, h: fh, vertical };
+    const glow = new THREE.Mesh(new THREE.PlaneGeometry(fw + 0.4, fh + 0.4), new THREE.MeshBasicMaterial({ color: new THREE.Color(2.2, 1.55, 0.9), transparent: true, opacity: 0.9 }));
     glow.position.z = -0.02; frame.add(glow);
-    const coverTex = tex.covers[i];
-    const cover = new THREE.Mesh(new THREE.PlaneGeometry(7.2, 4.05), new THREE.MeshBasicMaterial({ map: coverTex || null, color: coverTex ? new THREE.Color(1.6, 1.6, 1.6) : 0x333333 }));
+    let coverTex = tex.covers[i];
+    if (coverTex) {
+      // 封面置中裁切成畫框比例（object-fit: cover）
+      coverTex = coverTex.clone();
+      const ia = coverTex.image.width / coverTex.image.height, fa = fw / fh;
+      if (ia > fa) { coverTex.repeat.set(fa / ia, 1); coverTex.offset.set((1 - fa / ia) / 2, 0); }
+      else { coverTex.repeat.set(1, ia / fa); coverTex.offset.set(0, (1 - ia / fa) / 2); }
+      coverTex.needsUpdate = true;
+    }
+    const cover = new THREE.Mesh(new THREE.PlaneGeometry(fw, fh), new THREE.MeshBasicMaterial({ map: coverTex || null, color: coverTex ? new THREE.Color(1.6, 1.6, 1.6) : 0x333333 }));
     frame.add(cover);
     g.add(frame);
 
