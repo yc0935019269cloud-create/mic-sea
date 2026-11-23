@@ -2,6 +2,10 @@
 
 three.js 捲動式混音作品集。純靜態檔，不用建置。
 
+- 網站：https://yc0935019269cloud-create.github.io/mic-sea/
+- 更新方式：改完 commit 並 push 到 `main`，GitHub Pages 約 1 分鐘後自動更新。
+- 島上畫框的 YouTube 只在正式網址播得出來；本機（localhost）預覽時 YouTube 會擋嵌入，屬正常現象。
+
 ## 本機預覽
 
 在這個資料夾開 PowerShell：
