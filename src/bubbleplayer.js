@@ -171,7 +171,8 @@ export function createBubblePlayer(under, audio) {
         cap.classList.add('on');
         if (B[cur].w.kind === 'x') {
           const left = p.x > innerWidth / 2 ? p.x - p.r - 340 : p.x + p.r + 20;
-          xPanel.style.transform = `translate(${Math.max(12, Math.min(innerWidth - 332, left)).toFixed(1)}px, ${Math.max(70, p.y - 220).toFixed(1)}px)`;
+          const ph = xPanel.offsetHeight || 470;
+          xPanel.style.transform = `translate(${Math.max(12, Math.min(innerWidth - 332, left)).toFixed(1)}px, ${Math.max(70, Math.min(innerHeight - ph - 12, p.y - ph / 2)).toFixed(1)}px)`;
         }
       } else cap.classList.remove('on');
     },

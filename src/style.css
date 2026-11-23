@@ -152,7 +152,7 @@ a { color: inherit; }
 .bub-tip b { font: 500 15px/1.35 var(--serif); letter-spacing: 0.05em; }
 .bub-tip span { font-size: 12px; color: var(--ink-dim); letter-spacing: 0.05em; }
 .bub-tip em { font-style: normal; font-size: 11px; letter-spacing: 0.2em; color: #9fe8e0; margin-top: 2px; }
-.bub-cap { position: absolute; left: 0; top: 0; text-align: center; opacity: 0; transition: opacity 0.4s; text-shadow: 0 2px 14px rgba(0,0,0,0.6); white-space: nowrap; }
+.bub-cap { position: absolute; left: 0; top: 0; text-align: center; opacity: 0; transition: opacity 0.4s; white-space: nowrap; padding: 10px 16px 9px; border-radius: 14px; background: rgba(3, 18, 26, 0.58); border: 1px solid rgba(160, 230, 255, 0.18); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .bub-cap.on { opacity: 1; }
 .bub-t { margin: 0; font: 500 16px/1.4 var(--serif); letter-spacing: 0.06em; }
 .bub-c { margin: 2px 0 0; font-size: 12px; color: var(--ink-dim); letter-spacing: 0.06em; }
