@@ -26,6 +26,11 @@
     <h1 class="loader-title">蘇白</h1>
     <div class="loader-bar"><i id="loader-fill"></i></div>
     <p class="loader-note" id="loader-note">調音中…</p>
+    <div class="loader-enter">
+      <button id="enter" class="pill pill-solid pill-lg" type="button">進入</button>
+      <button id="enter-mute" class="enter-mute" type="button">靜音進入</button>
+      <p class="enter-note">建議戴上耳機</p>
+    </div>
   </div>
 </div>
 
@@ -33,6 +38,7 @@
   <a class="brand" href="#" data-jump="0"><span class="brand-zh">蘇白</span><span class="brand-en">SUBAI</span></a>
   <nav class="nav-actions">
     <button id="sound" class="pill" type="button" aria-pressed="false"><span class="eq"><i></i><i></i><i></i></span><span id="sound-label">開啟聲音</span></button>
+    <a class="pill nav-price" href="#" data-jump="price">價目表</a>
     <a class="pill pill-solid" href="#" data-jump="1">我要委託</a>
   </nav>
 </header>
@@ -40,7 +46,7 @@
 <ol id="rail" aria-label="作品導覽"></ol>
 
 <main id="overlay">
-  <section class="ov ov-hint" data-a="-1" data-b="0.03">
+  <section class="ov ov-hint" data-a="-1" data-b="0.015">
     <p class="scroll-hint"><span></span>Scroll</p>
   </section>
 
@@ -60,6 +66,10 @@
         <div class="ab-labels"><span>BEFORE<small>原始人聲</small></span><span>AFTER<small>完成混音</small></span></div>
       </div>
     </div>
+  </section>
+
+  <section class="ov ov-bubbles" data-a="2" data-b="2">
+    <p class="bub-hint">點一顆氣泡，聽那首作品</p>
   </section>
 
   <section class="ov ov-outro" data-a="0.965" data-b="2" data-interactive>

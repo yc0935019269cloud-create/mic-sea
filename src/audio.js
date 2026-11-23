@@ -87,10 +87,11 @@ export class AudioEngine {
   update(st) {
     if (!this.ready) return;
     const t = this.ctx.currentTime;
-    const sea = st.seaVis * (1 - st.reveal * 0.5) * (this.abPlaying ? 0.35 : 1) * (st.duck ? 0.25 : 1);
+    const uw = st.under || 0; // 水下：海浪聲變悶、變小
+    const sea = (st.seaVis * (1 - st.reveal * 0.5) + uw * 0.6) * (this.abPlaying ? 0.35 : 1) * (st.duck ? 0.25 : 1);
     this.seaGain.gain.setTargetAtTime(sea * (0.5 + st.storm * 0.9), t, 0.3);
-    this.seaFilter.frequency.setTargetAtTime(420 + st.storm * 2200 + st.vel * 1800, t, 0.2);
-    this.roomGain.gain.setTargetAtTime((1 - st.seaVis) * 0.012, t, 0.3);
+    this.seaFilter.frequency.setTargetAtTime((420 + st.storm * 2200 + st.vel * 1800) * (1 - uw) + (150 + st.vel * 300) * uw, t, 0.2);
+    this.roomGain.gain.setTargetAtTime((1 - st.seaVis - uw) * 0.012, t, 0.3);
     // A/B 時一起變化：Before 時讓聲音也像隔著霧（壓高頻）
     // 離開 A/B 區段就停播
     if (this.abPlaying && !st.inAB) this.playAB(false);

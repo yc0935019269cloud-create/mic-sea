@@ -7,6 +7,7 @@
 // 2026-11-23 在 w3schools.com 與 GitHub Pages 實測都能播，所以上線後正常。
 import * as THREE from 'three';
 import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
+import { whenYT } from './yt.js';
 
 const PX = 720, PY = 405;          // 橫式播放器 DOM 尺寸；直式（Shorts）用 405×720
 const FADE_IN = 110, FADE_OUT = 85; // 音量每秒變化量（0–100）：淡入約 0.9 秒、淡出約 1.2 秒
@@ -75,7 +76,7 @@ export function createIslandPlayer(works, islands, audio) {
     for (const o of slots) if (o !== s && o.state === 'on') o.state = 'out'; // 新的真的出聲了，舊的才淡出
   }
 
-  window.onYouTubeIframeAPIReady = () => {
+  whenYT().then((YT) => {
     for (const s of slots) {
       s.player = new YT.Player(s.holder, {
         width: PX, height: PY,
@@ -96,10 +97,7 @@ export function createIslandPlayer(works, islands, audio) {
         },
       });
     }
-  };
-  const sc = document.createElement('script');
-  sc.src = 'https://www.youtube.com/iframe_api';
-  document.head.appendChild(sc);
+  });
 
   function switchYt(i) {
     const on = slots.find((s) => s.state === 'on');

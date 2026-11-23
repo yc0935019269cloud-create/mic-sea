@@ -289,7 +289,7 @@ export function createSea(renderer, tex, buildLandmark) {
     out.up.set(0, 1, 0);
     out.island = -1; out.islandW = 0; out.reveal = 0;
     if (p <= T.seaEnd) {
-      const s = range(T.seaStart - 0.02, T.seaEnd, p);
+      const s = range(T.seaStart - 0.02 * T.K, T.seaEnd, p);
       const idxf = s * (NPTS - 1);
       const i0 = Math.min(Math.floor(idxf), NPTS - 2), fr = idxf - i0;
       const f = fr - Math.sin(2 * Math.PI * fr) / (2 * Math.PI) * 0.92; // 在每座島前放慢
@@ -301,25 +301,27 @@ export function createSea(renderer, tex, buildLandmark) {
       return out;
     }
     const camEnd = camPts[NPTS - 1], lookEnd = lookPts[NPTS - 1];
-    if (p <= T.riseStart) {
-      const a = smooth(range(T.seaEnd, T.abStart + 0.03, p));
+    if (p < T.bubTStart) {
+      // A/B 暴風雨 → 鏡頭壓低到水面，準備潛下去
+      const a = smooth(range(T.seaEnd, T.abStart + (T.abEnd - T.abStart) * 0.25, p));
       out.pos.lerpVectors(camEnd, AB_POS, a); out.look.lerpVectors(lookEnd, AB_LOOK, a);
+      const d = smooth(range(T.diveStart, T.diveEnd, p));
+      out.pos.y = THREE.MathUtils.lerp(out.pos.y, 0.35, d);
+      out.pos.z -= d * 14;
+      out.look.y = THREE.MathUtils.lerp(out.look.y, -120, d * d);
       out.headZ = out.pos.z;
       return out;
     }
+    if (p <= T.descEnd && flight) return flight.pose(p, T, out);
+    // 俯瞰旋律（停留），再往下沉、退回麥克風
     const H = topHeight();
-    const a = smooth(range(T.riseStart, T.riseEnd, p));
-    tmpA.set(H * 0.2, H, zMid); tmpB.set(H * 0.2, 0, zMid); // 往 +x 偏，讓五線譜落在畫面上半部、下半部留給標語
-    out.pos.lerpVectors(AB_POS, tmpA, a);
-    out.pos.y = THREE.MathUtils.lerp(AB_POS.y, H, Math.pow(a, 0.8));
-    out.look.lerpVectors(AB_LOOK, tmpB, smooth(range(0.0, 0.85, a)));
-    const ua = smooth(range(0.35, 1.0, a));
-    out.up.set(-ua, 1 - ua, 0).normalize();
-    if (p > T.holdEnd) { // 往下沉，準備退回麥克風
+    out.pos.set(H * 0.04, H, zMid); out.look.set(H * 0.04, 0, zMid);
+    out.up.set(-1, 0.0001, 0).normalize();
+    if (p > T.holdEnd) {
       const d = smooth(range(T.holdEnd, T.exitEnd, p));
       out.pos.y = THREE.MathUtils.lerp(H, H * 0.55, d);
     }
-    out.reveal = smooth(range(T.riseStart + (T.riseEnd - T.riseStart) * 0.55, T.riseEnd, p));
+    out.reveal = 1;
     out.headZ = zMid;
     return out;
   }
@@ -399,5 +401,6 @@ export function createSea(renderer, tex, buildLandmark) {
 
   function resize(w, h) { cam.aspect = w / h; cam.updateProjectionMatrix(); }
 
-  return { scene, cam, islands, pose, update, resize, stormState, zMid, flash(v = 1) { flash = v; } };
+  let flight = null;
+  return { scene, cam, islands, pose, update, resize, stormState, zMid, topHeight, setFlight(f) { flight = f; }, flash(v = 1) { flash = v; } };
 }
