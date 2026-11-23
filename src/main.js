@@ -59,7 +59,7 @@ const ovs = [...document.querySelectorAll('.ov')].map((el) => ({ el, a: +el.data
 const card = document.getElementById('card');
 const cardSound = document.getElementById('card-sound');
 let cardSoundState = '';
-const cardEls = { i: document.getElementById('card-i'), title: document.getElementById('card-title'), credit: document.getElementById('card-credit'), role: document.getElementById('card-role'), orig: document.getElementById('card-orig'), yt: document.getElementById('card-yt') };
+const cardEls = { i: document.getElementById('card-i'), title: document.getElementById('card-title'), credit: document.getElementById('card-credit'), yt: document.getElementById('card-yt') };
 let cardIdx = -1;
 function setCard(i) {
   if (i === cardIdx || i < 0) return;
@@ -67,8 +67,6 @@ function setCard(i) {
   cardEls.i.textContent = String(i + 1).padStart(2, '0');
   cardEls.title.textContent = w.title;
   cardEls.credit.textContent = w.credit;
-  cardEls.role.textContent = w.role;
-  cardEls.orig.textContent = w.original ? `原曲 ${w.original}` : '';
   cardEls.yt.href = ytUrl(w.yt);
 }
 
