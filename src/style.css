@@ -62,8 +62,9 @@ a { color: inherit; }
 #overlay { position: fixed; inset: 0; z-index: 10; pointer-events: none; }
 .ov { position: absolute; left: var(--gutter); right: var(--gutter); bottom: clamp(48px, 12vh, 140px); opacity: 0; will-change: opacity, transform; text-shadow: 0 2px 24px rgba(0,0,0,0.45); }
 .ov-center { bottom: auto; top: 50%; text-align: center; }
-.ov-sky { top: 22%; }
-.ov-tagline { top: 58%; }
+.ov-hint { left: 0; right: 0; display: flex; justify-content: center; }
+.ov-hint .scroll-hint { margin: 0; flex-direction: column; gap: 12px; font: italic 400 12px/1 var(--latin); letter-spacing: 0.4em; text-transform: uppercase; }
+.ov-outro { display: flex; justify-content: center; }
 .eyebrow { font: italic 500 15px/1.2 var(--latin); letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); margin: 0 0 14px; }
 .hero-title { font-family: var(--serif); font-weight: 300; font-size: clamp(48px, 8.5vw, 124px); line-height: 1.08; letter-spacing: 0.06em; margin: 0; }
 .hero-sub { font-family: var(--serif); font-size: clamp(16px, 1.6vw, 20px); color: var(--ink-dim); margin: 22px 0 0; letter-spacing: 0.12em; }
@@ -110,7 +111,6 @@ a { color: inherit; }
 /* ---------- tagline / outro ---------- */
 .tagline { font-family: var(--serif); font-weight: 300; font-size: clamp(32px, 5vw, 72px); line-height: 1.45; letter-spacing: 0.14em; margin: 0; }
 .tag-sub { color: var(--ink-dim); letter-spacing: 0.12em; margin-top: 24px; }
-.ov-outro { max-width: 640px; }
 .outro-title { font-family: var(--serif); font-weight: 300; font-size: clamp(40px, 6vw, 84px); line-height: 1.2; margin: 0 0 20px; letter-spacing: 0.08em; }
 .outro-sub { color: var(--ink-dim); line-height: 1.9; letter-spacing: 0.08em; margin: 0 0 30px; }
 .outro-cta { display: flex; flex-wrap: wrap; gap: 12px; }

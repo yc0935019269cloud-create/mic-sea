@@ -265,7 +265,9 @@ export function createSea(renderer, tex, buildLandmark) {
   for (let i = 0; i < RN; i++) { rainOff[i * 3] = (Math.random() - 0.5) * 110; rainOff[i * 3 + 1] = Math.random() * 45; rainOff[i * 3 + 2] = (Math.random() - 0.5) * 110; }
   const rainGeo = new THREE.BufferGeometry(); rainGeo.setAttribute('position', new THREE.BufferAttribute(rainPos, 3));
   const rainMat = new THREE.LineBasicMaterial({ color: 0xc8d0e2, transparent: true, opacity: 0, fog: true, depthWrite: false });
-  const rain = new THREE.LineSegments(rainGeo, rainMat); rain.frustumCulled = false; scene.add(rain);
+  const rain = new THREE.LineSegments(rainGeo, rainMat); rain.frustumCulled = false;
+  rain.renderOrder = 6; // 畫在雲（2）與地平線霧（4）之後，雨才會在雲的前面
+  scene.add(rain);
   let flash = 0;
 
   // ---------- 鏡頭 ----------
