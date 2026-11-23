@@ -111,6 +111,11 @@ export function createSea(renderer, tex, buildLandmark) {
   });
   water.rotation.x = -Math.PI / 2;
   water.material.uniforms.size.value = 1.6;
+  // 閃電照到水面：在水的 shader 裡加一個閃光項，反射越強的地方越亮（掠射角的遠處水面最亮）
+  water.material.uniforms.uFlash = { value: 0 };
+  water.material.fragmentShader = water.material.fragmentShader
+    .replace('uniform vec3 waterColor;', 'uniform vec3 waterColor; uniform float uFlash;')
+    .replace('vec3 outgoingLight = albedo;', 'vec3 outgoingLight = albedo + uFlash * vec3(0.72, 0.8, 1.0) * (0.12 + reflectance * 1.6) * (0.75 + 0.5 * reflectionSample.b);');
   scene.add(water);
   const waterCalm = new THREE.Color(0x0d2333), waterStorm = new THREE.Color(0x232530);
 
@@ -337,13 +342,14 @@ export function createSea(renderer, tex, buildLandmark) {
     wu.size.value = THREE.MathUtils.lerp(1.6, 0.55, s);
     wu.waterColor.value.copy(waterCalm).lerp(waterStorm, s);
     // 霧
-    scene.fog.color.copy(fogCalm).lerp(fogStorm, s);
     scene.fog.density = THREE.MathUtils.lerp(FOG_CALM, 0.016, s * s);
     scene.environmentIntensity = THREE.MathUtils.lerp(0.9, 0.25, s);
-    // 閃電
+    // 閃電：天空、霧、水面一起亮
     if (s > 0.55 && Math.random() < dt * 0.35 * s) flash = 1;
     flash = Math.max(0, flash - dt * 3.2);
     const fl = flash * flash * (0.6 + 0.4 * Math.sin(t * 90));
+    scene.fog.color.copy(fogCalm).lerp(fogStorm, s).multiplyScalar(1 + fl * 3.2);
+    wu.uFlash.value = fl * s;
     hemi.intensity = THREE.MathUtils.lerp(0.9, 0.35, s) + fl * 4;
     veilMat.opacity = s * 0.9;
     veilMat.color.copy(fogStorm).multiplyScalar(1 + fl * 2.5);
@@ -356,7 +362,7 @@ export function createSea(renderer, tex, buildLandmark) {
       c.m.position.x = c.base.x + Math.sin(t * 0.01 + i) * 60;
     });
     haze.position.x = cam.position.x; haze.position.z = cam.position.z;
-    hazeMat.uniforms.uColor.value.copy(fogCalm).lerp(fogStorm, s).multiplyScalar(1 + fl * 1.5);
+    hazeMat.uniforms.uColor.value.copy(fogCalm).lerp(fogStorm, s).multiplyScalar(1 + fl * 3.6);
     hazeMat.uniforms.uOpacity.value = 0.12 * (1 - s) + 0.97 * s;
     // 雨：細、密、遠處融進霧裡
     rainMat.opacity = s * 0.32;
@@ -393,5 +399,5 @@ export function createSea(renderer, tex, buildLandmark) {
 
   function resize(w, h) { cam.aspect = w / h; cam.updateProjectionMatrix(); }
 
-  return { scene, cam, islands, pose, update, resize, stormState, zMid };
+  return { scene, cam, islands, pose, update, resize, stormState, zMid, flash(v = 1) { flash = v; } };
 }

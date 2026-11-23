@@ -9,7 +9,7 @@ import * as THREE from 'three';
 import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
 
 const PX = 720, PY = 405;          // 橫式播放器 DOM 尺寸；直式（Shorts）用 405×720
-const FADE_IN = 55, FADE_OUT = 38; // 音量每秒變化量（0–100）：淡入約 1.8 秒、淡出約 2.6 秒
+const FADE_IN = 110, FADE_OUT = 85; // 音量每秒變化量（0–100）：淡入約 0.9 秒、淡出約 1.2 秒
 
 export function createIslandPlayer(works, islands, audio) {
   const failed = new Set();
@@ -146,7 +146,7 @@ export function createIslandPlayer(works, islands, audio) {
         s.vol = target > s.vol ? Math.min(target, s.vol + FADE_IN * dt) : Math.max(target, s.vol - FADE_OUT * dt);
         s.player.setVolume(Math.round(s.vol));
         const vt = s.state === 'on' && s.playing ? 1 : 0;
-        s.vis += (vt - s.vis) * Math.min(1, dt * (vt ? 2.2 : 1.2));
+        s.vis += (vt - s.vis) * Math.min(1, dt * (vt ? 3.6 : 2.4));
         if (s.state === 'out' && s.vol <= 0.5 && s.vis < 0.02) { s.player.pauseVideo(); s.state = 'idle'; s.idx = -1; }
         if (s.idx >= 0 && s.vis > 0.002) {
           const f = islands[s.idx].frame;

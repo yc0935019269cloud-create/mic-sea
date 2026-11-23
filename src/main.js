@@ -165,7 +165,7 @@ function boothPose(pp, cam) {
   cam.lookAt(tmp);
 }
 
-function frame() {
+function tick() {
   const dt = Math.min(clock.getDelta(), 1 / 20);
   const t = clock.elapsedTime;
   const prev = p;
@@ -255,8 +255,8 @@ function frame() {
   }
 
   audio.update({ seaVis: m, storm, reveal: seaPose.reveal, vel: clamp01(vel * 2), inAB: abW > 0.2, duck: islandPlayer.audible });
-  requestAnimationFrame(frame);
 }
+function frame() { tick(); requestAnimationFrame(frame); }
 
 onResize();
 frame();
@@ -264,4 +264,6 @@ requestAnimationFrame(() => {
   document.getElementById('loader').classList.add('done');
   started = true;
 });
-window.__mixsea = { T, works: WORKS, audio, islandPlayer, get p() { return p; }, set p(v) { p = pTarget = v; }, sea, booth, renderer, setAB(v) { abValue = v; abInput.value = v; }, skipFade() { fadeIn = 1; } };
+window.__mixsea = { T, works: WORKS, audio, islandPlayer, get p() { return p; }, set p(v) { p = pTarget = v; }, sea, booth, renderer, setAB(v) { abValue = v; abInput.value = v; }, skipFade() { fadeIn = 1; },
+  // 測試用：分頁隱藏時 requestAnimationFrame 不跑，手動推進 n 幀；storm 可直接指定
+  tick(n = 1) { for (let i = 0; i < n; i++) tick(); }, set storm(v) { storm = v; }, get storm() { return storm; }, flash(v = 1) { sea.flash(v); } };
