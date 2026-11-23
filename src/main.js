@@ -264,4 +264,4 @@ requestAnimationFrame(() => {
   document.getElementById('loader').classList.add('done');
   started = true;
 });
-window.__mixsea = { T, works: WORKS, audio, get p() { return p; }, set p(v) { p = pTarget = v; }, sea, booth, renderer, setAB(v) { abValue = v; abInput.value = v; }, skipFade() { fadeIn = 1; } };
+window.__mixsea = { T, works: WORKS, audio, islandPlayer, get p() { return p; }, set p(v) { p = pTarget = v; }, sea, booth, renderer, setAB(v) { abValue = v; abInput.value = v; }, skipFade() { fadeIn = 1; } };
